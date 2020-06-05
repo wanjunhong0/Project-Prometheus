@@ -2,7 +2,7 @@ import argparse
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run GCN.")
+    parser = argparse.ArgumentParser(description="Run GraphSAGE.")
     parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path.')
     parser.add_argument('--dataset', nargs='?', default='cora', help='Choose a dataset')
     parser.add_argument('--adj_type', nargs='?', default='double', help='Graph laplacian type')

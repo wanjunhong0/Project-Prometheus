@@ -38,6 +38,7 @@ class Encoder(nn.Module):
         """
         neigh_feats = self.aggregator.forward(nodes, [self.adj_lists[int(node)] for node in nodes], 
                 self.num_sample)
+        print(neigh_feats.shape)
         if not self.gcn:
             if self.cuda:
                 self_feats = self.features(torch.LongTensor(nodes).cuda())

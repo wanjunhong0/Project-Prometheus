@@ -18,8 +18,7 @@ class GCN(torch.nn.Module):
         self.dropout = dropout
 
     def forward(self, x, adj):
-        """Forward Function
-
+        """
         Args:
             x (torch Tensor): feature input
             adj (torch Tensor): Laplacian matrix

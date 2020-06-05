@@ -20,8 +20,7 @@ class GraphConvolution(torch.nn.Module):
         torch.nn.init.zeros_(self.bias)
 
     def forward(self, input, adj):
-        """Forward function
-
+        """
         Args:
             input (torch Tensor): H Hiddens
             adj (torch Tensor): L Laplacian matrix

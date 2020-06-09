@@ -1,54 +1,47 @@
 import torch
-import torch.nn as nn
 from torch.autograd import Variable
-
 import random
+
 
 """
 Set of modules for aggregating embeddings of neighbors.
 """
-
-class MeanAggregator(nn.Module):
+class MeanAggregator(torch.nn.Module):
     """
     Aggregates a node's embeddings using mean of neighbors' embeddings
     """
-    def __init__(self, features): 
+    def __init__(self, n_sample): 
         """
-        Initializes the aggregator for a specific graph.
-
-        features -- function mapping LongTensor of node ids to FloatTensor of feature values.
-        cuda -- whether to use GPU
-        gcn --- whether to perform concatenation GraphSAGE-style, or add self-loops GCN-style
+        Args:
+            n_sample (int): the number of neighbor that sampled for each node. No sampling if None.
         """
-
+        self.n_sample = n_sample
         super(MeanAggregator, self).__init__()
-
-        self.features = features
         
-    def forward(self, nodes, to_neighs, num_sample=10):
+    def forward(self, feature, neighbor_list):
         """
-        nodes --- list of nodes in a batch
-        to_neighs --- list of sets, each set is the set of neighbors for node in batch
-        num_sample --- number of neighbors to sample. No sampling if None.
-        """
-        # Local pointers to functions (speed hack)
-        _set = set
-        if not num_sample is None:
-            _sample = random.sample
-            samp_neighs = [_set(_sample(to_neigh, 
-                            num_sample,
-                            )) if len(to_neigh) >= num_sample else to_neigh for to_neigh in to_neighs]
-        else:
-            samp_neighs = to_neighs
+        Args:
+            feature (torch Tensor): feature input
+            neighbor_list (numpy array): neighbor id list for each node
 
-        unique_nodes_list = list(set.union(*samp_neighs))
-        unique_nodes = {n:i for i,n in enumerate(unique_nodes_list)}
-        mask = Variable(torch.zeros(len(samp_neighs), len(unique_nodes)))
-        column_indices = [unique_nodes[n] for samp_neigh in samp_neighs for n in samp_neigh]   
-        row_indices = [i for i in range(len(samp_neighs)) for j in range(len(samp_neighs[i]))]
+        Returns:
+            (torch Tensor): feature after mean aggregation
+        """
+        if self.n_sample is None:
+            sample = neighbor_list
+        else:
+            sample = [set(random.sample(neighbor, self.n_sample)) if len(neighbor) >= self.n_sample 
+                      else neighbor for neighbor in neighbor_list]
+
+        # not likely all nodes will be sampled, only aggregate those sampled nodes to reduce time consumption
+        unique_nodes_list = list(set.union(*sample))
+        unique_nodes_dict = {node_id: i for i, node_id in enumerate(unique_nodes_list)}
+        mask = Variable(torch.zeros(len(sample), len(unique_nodes_dict)))
+        column_indices = [unique_nodes_dict[node_id] for sample_neighbor in sample for node_id in sample_neighbor]   
+        row_indices = [i for i in range(len(sample)) for node_id in range(len(sample[i]))]
         mask[row_indices, column_indices] = 1
-        num_neigh = mask.sum(1, keepdim=True)
-        mask = mask.div(num_neigh)
-        embed_matrix = self.features(torch.LongTensor(unique_nodes_list))
-        to_feats = mask.mm(embed_matrix)
-        return to_feats
+        n_neighbor = mask.sum(1, keepdim=True)
+        mask = mask.div(n_neighbor)
+
+        agg_feature = mask.mm(feature[torch.LongTensor(unique_nodes_list)])
+        return agg_feature

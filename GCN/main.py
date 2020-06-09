@@ -55,7 +55,7 @@ for epoch in range(1, args.epoch+1):
 
     print('Epoch {0:04d} | time: {1:.2f}s | Loss = [train: {2:.4f}, val: {3:.4f}] | ACC = [train: {4:.4f}, val: {5:.4f}]'
           .format(epoch, time.time() - t, loss_train.item() ,loss_val.item(), acc_train, acc_val))
-
+          
 """
 ===========================================================================
 Testing

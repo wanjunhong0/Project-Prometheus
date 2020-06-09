@@ -17,16 +17,16 @@ class GCN(torch.nn.Module):
         self.gc2 = GraphConvolution(n_hidden, n_class)
         self.dropout = dropout
 
-    def forward(self, x, adj):
+    def forward(self, feature, adj):
         """
         Args:
-            x (torch Tensor): feature input
+            feature (torch Tensor): feature input
             adj (torch Tensor): Laplacian matrix
 
         Returns:
             (torch Tensor): output layer of GCN
         """
-        x = F.relu(self.gc1(x, adj))
+        x = F.relu(self.gc1(feature, adj))
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
         return x

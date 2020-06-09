@@ -8,7 +8,7 @@ import argparse
 
 
 class Data(object):
-    def __init__(self, path, adj_type, test_size, seed):
+    def __init__(self, path, test_size, seed):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
            
@@ -38,9 +38,10 @@ class Data(object):
         adj = sp.coo_matrix((np.ones(self.n_edge), (edge_list[0], edge_list[1])), shape=(self.n_node, self.n_node),dtype=np.float32)
         # build symmetric adjacency matrix
         adj = (adj + adj.T.multiply(adj.T > adj)).todense()
-        self.edge_dict = {}
+        self.neighbor_list = []
         for i in range(adj.shape[0]):
-            self.edge_dict[i] = set(np.where(adj[i] == 1.)[1])
+            self.neighbor_list.append(set(np.where(adj[i] == 1.)[1]))
+        self.neighbor_list = np.asarray(self.neighbor_list)
         # self.norm_adj = create_norm_adj(adj, adj_type=adj_type)
         # train, val, test split
         self.idx_train, self.idx_test = train_test_split(range(self.n_node), test_size=test_size, random_state=seed)

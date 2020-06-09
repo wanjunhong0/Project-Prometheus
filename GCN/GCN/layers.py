@@ -4,7 +4,9 @@ from torch.nn.parameter import Parameter
 
 
 class GraphConvolution(torch.nn.Module):
-    """Simple GCN layer, similar to https://arxiv.org/abs/1609.02907"""
+    """
+    Simple GCN layer, similar to https://arxiv.org/abs/1609.02907
+    """
     def __init__(self, in_dim, out_dim):
         """
         Args:

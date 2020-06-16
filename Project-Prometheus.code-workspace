@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "GraphSAGE"
+		},
+		{
+			"path": "GAT"
 		}
 	]
 }

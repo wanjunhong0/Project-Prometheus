@@ -1,7 +1,8 @@
 import torch
 from torch.autograd import Variable
 import random
-
+import numpy as np
+import scipy.sparse as sp
 
 """
 Set of modules for aggregating embeddings of neighbors.
@@ -42,6 +43,10 @@ class MeanAggregator(torch.nn.Module):
         mask[row_indices, column_indices] = 1
         n_neighbor = mask.sum(1, keepdim=True)
         mask = mask.div(n_neighbor)
+        # convert sparse multiplication to reduce time consumption
+        indices = torch.nonzero(mask).t()
+        mask = torch.sparse.FloatTensor(indices, mask[indices[0], indices[1]], mask.size())
 
-        agg_feature = mask.mm(feature[torch.LongTensor(unique_nodes_list)])
+        # agg_feature = mask.mm(feature[torch.LongTensor(unique_nodes_list)])
+        agg_feature = torch.spmm(mask, feature[torch.LongTensor(unique_nodes_list)])
         return agg_feature

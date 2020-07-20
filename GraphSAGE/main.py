@@ -43,7 +43,7 @@ for epoch in range(1, args.epoch+1):
     model.train()
     optimizer.zero_grad()
     output = model(idx_train, feature, neighbor_list)
-    loss_train = F.cross_entropy(input=output, target=label[idx_train])
+    loss_train = F.nll_loss(input=output, target=label[idx_train])
     acc_train = accuracy_score(y_pred=output.max(1)[1], y_true=label[idx_train])
     loss_train.backward()
     optimizer.step()
@@ -51,7 +51,7 @@ for epoch in range(1, args.epoch+1):
     # Validation
     model.eval()
     output = model(idx_val, feature, neighbor_list)
-    loss_val = F.cross_entropy(input=output, target=label[idx_val])
+    loss_val = F.nll_loss(input=output, target=label[idx_val])
     acc_val = accuracy_score(y_pred=output.max(1)[1], y_true=label[idx_val])
 
     print('Epoch {0:04d} | time: {1:.2f}s | Loss = [train: {2:.4f}, val: {3:.4f}] | ACC = [train: {4:.4f}, val: {5:.4f}]'
@@ -64,7 +64,7 @@ Testing
 """
 model.eval()
 output = model(idx_test, feature, neighbor_list)
-loss_test = F.cross_entropy(input=output, target=label[idx_test])
+loss_test = F.nll_loss(input=output, target=label[idx_test])
 acc_test = accuracy_score(y_pred=output.max(1)[1], y_true=label[idx_test])
 print('======================Testing======================')
 print('Loss = [test: {0:.4f}] | ACC = [test: {1:.4f}]'.format(loss_test.item(), acc_test))

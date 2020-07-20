@@ -47,7 +47,7 @@ class SupervisedGraphSAGE(torch.nn.Module):
         emb2 = F.relu(self.gc2(x))
         emb2 = F.dropout(emb2, self.dropout, training=self.training)
         scores = self.fc(emb2)
-        return scores
+        return F.log_softmax(scores, dim=1)
 
 
 

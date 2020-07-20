@@ -35,8 +35,8 @@ Training
 """
 model = SupervisedGraphSAGE(n_feature=feature.shape[1], n_hidden=args.hidden,
                             n_class=data.n_class, n_sample=args.sample, dropout=args.dropout)
-
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+
 for epoch in range(1, args.epoch+1):
     t = time.time()
     # Training

@@ -24,7 +24,7 @@ class GCN(torch.nn.Module):
             adj (torch Tensor): Laplacian matrix
 
         Returns:
-            (torch Tensor): output layer of GCN
+            (torch Tensor): log probability for each class in label
         """
         x = F.relu(self.gc1(feature, adj))
         x = F.dropout(x, self.dropout, training=self.training)

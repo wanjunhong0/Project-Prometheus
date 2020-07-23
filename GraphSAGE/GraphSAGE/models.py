@@ -34,7 +34,7 @@ class SupervisedGraphSAGE(torch.nn.Module):
             neighbor_list (numpy array): neighbor id list for each node
 
         Returns:
-            (torch Tensor): output layer of GraphSAGE
+            (torch Tensor): log probability for each class in label
         """
         x = self.agg1(feature, neighbor_list)
         x = torch.cat([feature, x], dim=1)

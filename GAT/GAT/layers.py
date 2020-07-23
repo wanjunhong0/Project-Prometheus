@@ -9,10 +9,13 @@ class GraphAttentionLayer(torch.nn.Module):
     """
     Simple GAT layer, similar to https://arxiv.org/abs/1710.10903
     """
-
-    def __init__(self, in_dim, out_dim, dropout):
+    def __init__(self, in_dim, out_dim):
+        """
+        Args:
+            in_dim (int): input dimension
+            out_dim (int): output dimension
+        """
         super(GraphAttentionLayer, self).__init__()
-        self.dropout = dropout
         self.in_features = in_dim
         self.out_features = out_dim
 
@@ -21,32 +24,25 @@ class GraphAttentionLayer(torch.nn.Module):
         torch.nn.init.xavier_uniform_(self.W.data, gain=1.414)
         torch.nn.init.xavier_uniform_(self.a.data, gain=1.414)
 
-
     def forward(self, input, edge_list):
+        """
+        Args:
+            input (torch Tensor): H hiddens 
+            edge_list (torch Tensor): node index for every edge in graph
+
+        Returns:
+            (torch Tensor): H' hiddens after propagation using attention matrix
+        """
         h = torch.mm(input, self.W)
         N = h.shape[0]
 
         # matrix form to calculate every W * h_i || W * h_j in edge_list
         a_input = torch.cat([h[edge_list[0], :], h[edge_list[1], :]], dim=1)
-        e = F.leaky_relu(torch.matmul(a_input, self.a))[:, 0]
-        # e = pad_sequence([e[edge_list[0] == i] for i in range(N)], padding_value=-float('inf')).squeeze()
-        # attention = F.softmax(e, dim=1).view(-1)
-        # attention = attention[attention.nonzero()].view(-1)
-        # a_mat = torch.zeros([N, N], requires_grad=True)
-        # a_mat[edge_list[0], edge_list[1]] = attention
-
-
+        e = F.leaky_relu(torch.matmul(a_input, self.a)).view(-1)
         # in order to =0 after softmax, since exp(-inf)=0
         attention = -1e20*torch.ones([N, N])
         attention[edge_list[0], edge_list[1]] = e
         attention = F.softmax(attention, dim=1)
-
         h_prime = torch.matmul(attention, h)
 
         return F.elu(h_prime)
-
-
-
-        
-        
-

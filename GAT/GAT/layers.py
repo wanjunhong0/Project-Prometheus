@@ -1,42 +1,52 @@
 import numpy as np
 import torch
-import torch.nn as nn
+from torch.nn.parameter import Parameter
 import torch.nn.functional as F
+from torch.nn.utils.rnn import pad_sequence
 
 
-class GraphAttentionLayer(nn.Module):
+class GraphAttentionLayer(torch.nn.Module):
     """
     Simple GAT layer, similar to https://arxiv.org/abs/1710.10903
     """
 
-    def __init__(self, in_features, out_features, dropout, concat=True):
+    def __init__(self, in_dim, out_dim, dropout):
         super(GraphAttentionLayer, self).__init__()
         self.dropout = dropout
-        self.in_features = in_features
-        self.out_features = out_features
-        self.concat = concat
+        self.in_features = in_dim
+        self.out_features = out_dim
 
-        self.W = nn.Parameter(torch.zeros(size=(in_features, out_features)))
-        nn.init.xavier_uniform_(self.W.data, gain=1.414)
-        self.a = nn.Parameter(torch.zeros(size=(2*out_features, 1)))
-        nn.init.xavier_uniform_(self.a.data, gain=1.414)
+        self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
+        self.a = Parameter(torch.FloatTensor(out_dim*2, 1))
+        torch.nn.init.xavier_uniform_(self.W.data, gain=1.414)
+        torch.nn.init.xavier_uniform_(self.a.data, gain=1.414)
 
 
-    def forward(self, input, adj):
+    def forward(self, input, edge_list):
         h = torch.mm(input, self.W)
-        N = h.size()[0]
+        N = h.shape[0]
 
-        a_input = torch.cat([h.repeat(1, N).view(N * N, -1), h.repeat(N, 1)], dim=1).view(N, -1, 2 * self.out_features)
-        e = F.leaky_relu(torch.matmul(a_input, self.a).squeeze(2))
+        # matrix form to calculate every W * h_i || W * h_j in edge_list
+        a_input = torch.cat([h[edge_list[0], :], h[edge_list[1], :]], dim=1)
+        e = F.leaky_relu(torch.matmul(a_input, self.a))[:, 0]
+        # e = pad_sequence([e[edge_list[0] == i] for i in range(N)], padding_value=-float('inf')).squeeze()
+        # attention = F.softmax(e, dim=1).view(-1)
+        # attention = attention[attention.nonzero()].view(-1)
+        # a_mat = torch.zeros([N, N], requires_grad=True)
+        # a_mat[edge_list[0], edge_list[1]] = attention
 
-        zero_vec = -9e15*torch.ones_like(e)
-        attention = torch.where(adj > 0, e, zero_vec)
+
+        # in order to =0 after softmax, since exp(-inf)=0
+        attention = -1e20*torch.ones([N, N])
+        attention[edge_list[0], edge_list[1]] = e
         attention = F.softmax(attention, dim=1)
-        attention = F.dropout(attention, self.dropout, training=self.training)
+
         h_prime = torch.matmul(attention, h)
 
-        if self.concat:
-            return F.elu(h_prime)
-        else:
-            return h_prime
+        return F.elu(h_prime)
+
+
+
+        
+        
 

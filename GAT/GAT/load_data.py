@@ -40,75 +40,9 @@ class Data(object):
         # build symmetric adjacency matrix
         adj = adj + adj.T.multiply(adj.T > adj) + sp.eye(adj.shape[0])
         self.edge_list = torch.from_numpy(np.vstack((adj.tocoo().row, adj.tocoo().col)).astype(np.int64))
-        # self.adj = adj + sp.eye(adj.shape[0])
-        # self.adj = sparse_mx_to_torch_sparse_tensor(adj + sp.eye(adj.shape[0]))
-        # self.adj = torch.FloatTensor(np.array(self.adj.todense()))
         # train, val, test split
         self.idx_train, self.idx_test = train_test_split(range(self.n_node), test_size=test_size, random_state=seed)
         self.idx_train, self.idx_val = train_test_split(self.idx_train, test_size=test_size, random_state=seed)
         self.idx_train = torch.LongTensor(self.idx_train)
         self.idx_val = torch.LongTensor(self.idx_val)
         self.idx_test = torch.LongTensor(self.idx_test)
-
-
-# def create_norm_adj(adj_mat, adj_type):
-#     """Create normalized laplacian matrix from adjacency matrix
-
-#     Args:
-#         adj_mat (scipy.sparse matrix): adjacency matrix
-#         adj_type (str): the type of laplacian matrix of adjacency matrix {'single', 'double'}
-
-#     Returns:
-#         (torch.sparse Tensor): Normalized laplacian matrix
-#     """
-#     def normalized_adj_single(adj):
-#         rowsum = np.array(adj.sum(1))
-#         with np.errstate(divide='ignore'):   # ignore divide by zero warning
-#             d_inv = np.power(rowsum, -1).flatten()
-#         d_inv[np.isinf(d_inv)] = 0.
-#         d_mat_inv = sp.diags(d_inv)
-#         norm_adj = d_mat_inv.dot(adj)
-#         print('Using Random walk normalized Laplacian.')
-#         return norm_adj.tocoo()
-
-#     def normalized_adj_double(adj):
-#         rowsum = np.array(adj.sum(1))
-#         with np.errstate(divide='ignore'):  # ignore divide by zero warning
-#             d_inv_sqrt = np.power(rowsum, -0.5).flatten()
-#         d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
-#         d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-#         norm_adj = (d_mat_inv_sqrt.dot(adj)).dot(d_mat_inv_sqrt)
-#         print('Using Symmetric normalized Laplacian')
-#         return norm_adj.tocoo()
-    
-#     if adj_type == 'single':     # D^(-1)(A)
-#         norm_adj_mat = normalized_adj_single(adj_mat + sp.eye(adj_mat.shape[0]))
-#     if adj_type == 'double':    # D^(-1/2)AD^(-1/2)
-#         norm_adj_mat = normalized_adj_double(adj_mat + sp.eye(adj_mat.shape[0]))
-
-#     return norm_adj_mat
-#     # return sparse_mx_to_torch_sparse_tensor(norm_adj_mat)
-
-
-# def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-#     """Convert a scipy sparse matrix to a torch sparse tensor."""
-#     sparse_mx = sparse_mx.tocoo().astype(np.float32)
-#     indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-#     values = torch.from_numpy(sparse_mx.data)
-#     shape = torch.Size(sparse_mx.shape)
-#     return torch.sparse.FloatTensor(indices, values, shape)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

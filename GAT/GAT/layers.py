@@ -2,7 +2,6 @@ import numpy as np
 import torch
 from torch.nn.parameter import Parameter
 import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_sequence
 
 
 class GraphAttentionLayer(torch.nn.Module):

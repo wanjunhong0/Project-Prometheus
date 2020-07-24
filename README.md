@@ -3,5 +3,5 @@
 ## Classic GNN methods (Pytorch Implementation)
 - [x] GCN 
 - [x] GrahpSAGE
-- [ ] GAT
+- [X] GAT
 - [ ] MPNN

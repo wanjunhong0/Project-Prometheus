@@ -4,4 +4,5 @@
 - [x] GCN 
 - [x] GrahpSAGE
 - [x] GAT
-- [ ] MPNN
+
+require `pytorch > 1.6.0` for `torch.sparse.softmax`

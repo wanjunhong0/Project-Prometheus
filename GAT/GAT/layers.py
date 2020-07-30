@@ -38,10 +38,8 @@ class GraphAttentionLayer(torch.nn.Module):
         # matrix form to calculate every W * h_i || W * h_j in edge_list
         a_input = torch.cat([h[edge_list[0], :], h[edge_list[1], :]], dim=1)
         e = F.leaky_relu(torch.matmul(a_input, self.a), negative_slope=0.2).view(-1)
-        # in order to =0 after softmax, since exp(-inf)=0
-        attention = -1e20*torch.ones([N, N])
-        attention[edge_list[0], edge_list[1]] = e
-        attention = F.softmax(attention, dim=1)
-        h_prime = torch.matmul(attention, h)
+        e = torch.sparse.FloatTensor(edge_list, e, torch.Size([N, N]))
+        attention = torch.sparse.softmax(e, dim=1)
+        h_prime = torch.sparse.mm(attention, h)
 
         return F.elu(h_prime)

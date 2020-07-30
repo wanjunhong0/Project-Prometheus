@@ -29,7 +29,7 @@ class Data(object):
         # feature, label
         df = df.set_index(0)
         self.feature = torch.FloatTensor(df.iloc[:, :-1].values)
-        self.feature = F.normalize(self.feature, p=1, dim=1)   #normalization
+        self.feature = F.normalize(self.feature, p=1, dim=1)   # normalization
         # Pytorch require multi-class label as integer categorical class labels
         self.label = torch.LongTensor(np.where(pd.get_dummies(df.iloc[:, -1]).values)[1])
         self.n_class = df.iloc[:, -1].nunique()

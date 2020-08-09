@@ -58,7 +58,7 @@ for epoch in range(1, args.epoch+1):
     acc_val = accuracy_score(y_pred=output[idx_val].max(1)[1], y_true=label[idx_val])
 
     print('Epoch {0:04d} | time: {1:.2f}s | Loss = [train: {2:.4f}, val: {3:.4f}] | ACC = [train: {4:.4f}, val: {5:.4f}]'
-          .format(epoch, time.time() - t, loss_train.item() ,loss_val.item(), acc_train, acc_val))
+          .format(epoch, time.time() - t, loss_train.item(), loss_val.item(), acc_train, acc_val))
 
 """
 ===========================================================================

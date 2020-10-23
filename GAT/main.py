@@ -15,6 +15,10 @@ args = parse_args()
 torch.manual_seed(args.seed)
 random.seed(args.seed)
 
+# training on the first GPU if not on CPU
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print('Training on device = {}'.format(device))
+
 """
 ===========================================================================
 Loading data
@@ -22,13 +26,13 @@ Loading data
 """
 data = Data(path=args.data_path + args.dataset, adj_type=args.adj_type, test_size=args.test_size, seed=args.seed)
 print('Loaded {0} dataset with {1} nodes and {2} edges'.format(args.dataset, data.n_node, data.n_edge))
-feature = data.feature
+feature = data.feature.to(device)
 label = data.label
 # adj = data.adj
 idx_train = data.idx_train
 idx_val = data.idx_val
 idx_test = data.idx_test
-edge_list = data.edge_list
+edge_list = data.edge_list.to(device)
 
 
 """
@@ -39,13 +43,14 @@ Training
 # Model and optimizer
 model = GAT(n_feature=feature.shape[1], n_hidden=args.hidden, n_class=data.n_class, dropout=args.dropout, n_head=args.n_head)
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+model.to(device)
 
 for epoch in range(1, args.epoch+1):
     t = time.time()
     # Training
     model.train()
     optimizer.zero_grad()
-    output = model(feature, edge_list)
+    output = model(feature, edge_list).cpu()
     loss_train = F.nll_loss(input=output[idx_train], target=label[idx_train])
     acc_train = accuracy_score(y_pred=output[idx_train].max(1)[1], y_true=label[idx_train])
     loss_train.backward()
@@ -53,7 +58,7 @@ for epoch in range(1, args.epoch+1):
 
     # Validation
     model.eval()
-    output = model(feature, edge_list)
+    output = model(feature, edge_list).cpu()
     loss_val = F.nll_loss(input=output[idx_val], target=label[idx_val])
     acc_val = accuracy_score(y_pred=output[idx_val].max(1)[1], y_true=label[idx_val])
 
@@ -66,7 +71,7 @@ Testing
 ===========================================================================
 """
 model.eval()
-output = model(feature, edge_list)
+output = model(feature, edge_list).cpu()
 loss_test = F.nll_loss(input=output[idx_test], target=label[idx_test])
 acc_test = accuracy_score(y_pred=output[idx_test].max(1)[1], y_true=label[idx_test])
 print('======================Testing======================')

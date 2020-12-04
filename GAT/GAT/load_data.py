@@ -37,14 +37,12 @@ class Data(object):
         self.n_edge = edge_list.shape[0]
         adj = torch.sparse.FloatTensor(edge_list.T, torch.ones(self.n_edge), torch.Size([self.n_node, self.n_node]))
         # build symmetric adjacency matrix
-        adj = torch.add(torch.eye(self.n_node).to_sparse(), torch.add(adj, adj.transpose(0, 1)))
+        adj = torch.add(torch.eye(self.n_node).to_sparse(), torch.add(adj, adj.transpose(0, 1))) # may have elements > 1
         self.edge_list = adj._indices()
         # train, val, test split
         self.idx_train, self.idx_test = train_test_split(range(self.n_node), test_size=test_size, random_state=seed)
         self.idx_train, self.idx_val = train_test_split(self.idx_train, test_size=test_size, random_state=seed)
-        self.idx_train = torch.LongTensor(self.idx_train)
-        self.idx_val = torch.LongTensor(self.idx_val)
-        self.idx_test = torch.LongTensor(self.idx_test)
+        self.idx_train, self.idx_val, self.idx_test = [torch.LongTensor(i) for i in [self.idx_train, self.idx_val, self.idx_test]]
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -68,8 +66,8 @@ class Dataset(torch.utils.data.Dataset):
 
 def collate(batch):
     """ Collate function for mini-batch, can't use default collate_fn due to edge_list in different size"""
-    edge_list = torch.cat([i for i, _ in batch], dim=1)
-    idx = torch.LongTensor([j for _, j in batch])
+    edge_list = torch.unique(torch.cat([i[0] for i in batch], dim=1), dim=1)
+    idx = torch.LongTensor([i[1] for i in batch])
 
     return edge_list, idx
 

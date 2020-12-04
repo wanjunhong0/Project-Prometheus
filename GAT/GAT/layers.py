@@ -15,11 +15,10 @@ class GraphAttentionLayer(torch.nn.Module):
             out_dim (int): output dimension
         """
         super(GraphAttentionLayer, self).__init__()
-        self.in_features = in_dim
-        self.out_features = out_dim
 
         self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
         self.a = Parameter(torch.FloatTensor(out_dim*2, 1))
+        
         torch.nn.init.xavier_uniform_(self.W.data, gain=1.414)
         torch.nn.init.xavier_uniform_(self.a.data, gain=1.414)
 

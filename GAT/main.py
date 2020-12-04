@@ -13,7 +13,6 @@ from GAT.load_data import Data, Dataset, collate
 
 # Settings
 args = parse_args()
-args = parse_args()
 for arg in vars(args):
     print('{0} = {1}'.format(arg, getattr(args, arg)))
 torch.manual_seed(args.seed)
@@ -80,7 +79,6 @@ for epoch in range(1, args.epoch+1):
 Testing
 ===========================================================================
 """
-model.eval()
 loss_test, acc_test = 0, 0
 for edge_list_batch, idx_batch in test_loader:
     output = model(feature, edge_list_batch.to(device)).cpu()

@@ -1,9 +1,9 @@
 import time
-import argparse
-from sklearn.metrics import accuracy_score
 import torch
-import torch.nn.functional as F
 import torch.optim as optim
+import torch.nn.functional as F
+from sklearn.metrics import accuracy_score
+
 from GCN.models import GCN
 from GCN.parser import parse_args
 from GCN.load_data import Data
@@ -11,8 +11,9 @@ from GCN.load_data import Data
 
 # Settings
 args = parse_args()
+for arg in vars(args):
+    print('{0} = {1}'.format(arg, getattr(args, arg)))
 torch.manual_seed(args.seed)
-
 # training on the first GPU if not on CPU
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Training on device = {}'.format(device))
@@ -25,8 +26,8 @@ Loading data
 data = Data(path=args.data_path + args.dataset, adj_type=args.adj_type, test_size=args.test_size, seed=args.seed)
 print('Loaded {0} dataset with {1} nodes and {2} edges'.format(args.dataset, data.n_node, data.n_edge))
 feature = data.feature.to(device)
-label = data.label
 norm_adj = data.norm_adj.to(device)
+label = data.label
 idx_train = data.idx_train
 idx_val = data.idx_val
 idx_test = data.idx_test
@@ -60,7 +61,7 @@ for epoch in range(1, args.epoch+1):
 
     print('Epoch {0:04d} | time: {1:.2f}s | Loss = [train: {2:.4f}, val: {3:.4f}] | ACC = [train: {4:.4f}, val: {5:.4f}]'
           .format(epoch, time.time() - t, loss_train.item(), loss_val.item(), acc_train, acc_val))
-          
+
 """
 ===========================================================================
 Testing

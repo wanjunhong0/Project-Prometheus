@@ -5,7 +5,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run GCN.")
     parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path.')
     parser.add_argument('--dataset', nargs='?', default='cora', help='Choose a dataset')
-    parser.add_argument('--adj_type', nargs='?', default='double', help='Graph laplacian type')
+    parser.add_argument('--adj_type', nargs='?', default='symmetric', help='Graph laplacian type from {symmetric, unsymmetric}')
 
     parser.add_argument('--seed', type=int, default=123, help='Random seed.')
     parser.add_argument('--test_size', type=int, default=0.4, help='Test dataset size.')

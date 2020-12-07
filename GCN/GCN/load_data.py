@@ -1,5 +1,4 @@
 import numpy as np
-import scipy.sparse as sp
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -26,6 +25,7 @@ class Data(object):
         df[0] = df[0].map(id_map)
         edge_list[0] = edge_list[0].map(id_map)
         edge_list[1] = edge_list[1].map(id_map)
+        edge_list = torch.LongTensor(edge_list.values)
         # feature, label
         df = df.set_index(0)
         self.feature = torch.FloatTensor(df.iloc[:, :-1].values)
@@ -36,75 +36,33 @@ class Data(object):
         # graph
         self.n_node = df.shape[0]
         self.n_edge = edge_list.shape[0]
-        adj = sp.coo_matrix((np.ones(self.n_edge), (edge_list[0], edge_list[1])), shape=(self.n_node, self.n_node),dtype=np.float32)
+        adj = torch.sparse.FloatTensor(edge_list.T, torch.ones(self.n_edge), torch.Size([self.n_node, self.n_node]))
         # build symmetric adjacency matrix
-        adj = adj + adj.T.multiply(adj.T > adj)
+        adj = torch.add(torch.eye(self.n_node).to_sparse(), torch.add(adj, adj.transpose(0, 1))) # may have elements > 1
+        self.adj = torch.sparse.FloatTensor(adj._indices(), torch.ones_like(adj._values()), adj.size())
         self.norm_adj = create_norm_adj(adj, adj_type=adj_type)
         # train, val, test split
         self.idx_train, self.idx_test = train_test_split(range(self.n_node), test_size=test_size, random_state=seed)
         self.idx_train, self.idx_val = train_test_split(self.idx_train, test_size=test_size, random_state=seed)
-        self.idx_train = torch.LongTensor(self.idx_train)
-        self.idx_val = torch.LongTensor(self.idx_val)
-        self.idx_test = torch.LongTensor(self.idx_test)
+        self.idx_train, self.idx_val, self.idx_test = [torch.LongTensor(i) for i in [self.idx_train, self.idx_val, self.idx_test]]
 
 
-def create_norm_adj(adj_mat, adj_type):
+def create_norm_adj(adj, adj_type):
     """Create normalized laplacian matrix from adjacency matrix
 
     Args:
-        adj_mat (scipy.sparse matrix): adjacency matrix
-        adj_type (str): the type of laplacian matrix of adjacency matrix {'single', 'double'}
+        adj_mat (troch sparse tensor): adjacency matrix
+        adj_type (str): the type of laplacian matrix of adjacency matrix
 
     Returns:
         (torch.sparse Tensor): Normalized laplacian matrix
     """
-    def normalized_adj_single(adj):
-        rowsum = np.array(adj.sum(1))
-        with np.errstate(divide='ignore'):   # ignore divide by zero warning
-            d_inv = np.power(rowsum, -1).flatten()
-        d_inv[np.isinf(d_inv)] = 0.
-        d_mat_inv = sp.diags(d_inv)
-        norm_adj = d_mat_inv.dot(adj)
-        print('Using Random walk normalized Laplacian.')
-        return norm_adj.tocoo()
-
-    def normalized_adj_double(adj):
-        rowsum = np.array(adj.sum(1))
-        with np.errstate(divide='ignore'):  # ignore divide by zero warning
-            d_inv_sqrt = np.power(rowsum, -0.5).flatten()
-        d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
-        d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
-        norm_adj = (d_mat_inv_sqrt.dot(adj)).dot(d_mat_inv_sqrt)
-        print('Using Symmetric normalized Laplacian')
-        return norm_adj.tocoo()
+    degree = torch.sparse.sum(adj, dim=1)._values()
+    if adj_type == 'unsymmetric':  # D^(-1) * A
+        degree_ = torch.diag(degree.pow(-1))
+        norm_adj = torch.mm(adj, degree_)
+    if adj_type == 'symmetric':   # D^(-1/2) * A * D^(-1/2)
+        degree_ = torch.diag(degree.pow(-0.5))
+        norm_adj = torch.mm(torch.mm(adj, degree_), degree_)
     
-    if adj_type == 'single':     # D^(-1)(A)
-        norm_adj_mat = normalized_adj_single(adj_mat + sp.eye(adj_mat.shape[0]))
-    if adj_type == 'double':    # D^(-1/2)AD^(-1/2)
-        norm_adj_mat = normalized_adj_double(adj_mat + sp.eye(adj_mat.shape[0]))
-
-    return sparse_mx_to_torch_sparse_tensor(norm_adj_mat)
-
-
-def sparse_mx_to_torch_sparse_tensor(sparse_mx):
-    """Convert a scipy sparse matrix to a torch sparse tensor."""
-    sparse_mx = sparse_mx.tocoo().astype(np.float32)
-    indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
-    values = torch.from_numpy(sparse_mx.data)
-    shape = torch.Size(sparse_mx.shape)
-    return torch.sparse.FloatTensor(indices, values, shape)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return norm_adj.to_sparse()

@@ -13,9 +13,10 @@ class GCN(torch.nn.Module):
             dropout (float): dropout rate
         """
         super(GCN, self).__init__()
+
+        self.dropout = dropout
         self.gc1 = GraphConvolution(n_feature, n_hidden)
         self.gc2 = GraphConvolution(n_hidden, n_class)
-        self.dropout = dropout
 
     def forward(self, feature, adj):
         """

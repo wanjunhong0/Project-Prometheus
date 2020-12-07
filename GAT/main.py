@@ -1,14 +1,13 @@
 import time
 import argparse
-import random
 import torch
-import torch.nn.functional as F
 import torch.optim as optim
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score
 
-from GAT.parser import parse_args
 from GAT.models import GAT
+from GAT.parser import parse_args
 from GAT.load_data import Data, Dataset, collate
 
 # Settings
@@ -16,7 +15,6 @@ args = parse_args()
 for arg in vars(args):
     print('{0} = {1}'.format(arg, getattr(args, arg)))
 torch.manual_seed(args.seed)
-random.seed(args.seed)
 # training on the first GPU if not on CPU
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('Training on device = {}'.format(device))
@@ -43,7 +41,7 @@ Training
 ===========================================================================
 """
 # Model and optimizer
-model = GAT(n_feature=feature.shape[1], n_hidden=args.hidden, n_class=data.n_class, dropout=args.dropout, n_head=args.n_head)
+model = GAT(n_feature=feature.shape[1], n_hidden=args.hidden, n_class=data.n_class, dropout=args.dropout, n_head=args.head)
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 model.to(device)
 

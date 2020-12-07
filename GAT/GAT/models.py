@@ -14,6 +14,7 @@ class GAT(torch.nn.Module):
             n_head (int): the number of attention head
         """
         super(GAT, self).__init__()
+        
         self.dropout = dropout
         # multi-head graph attention
         self.attentions = [GraphAttentionLayer(n_feature, n_hidden) for _ in range(n_head)]

@@ -14,6 +14,6 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
     parser.add_argument('--hidden', type=int, default=8, help='Number of hidden units.')
     parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
-    parser.add_argument('--n_head', type=int, default=8, help='Number of head attentions.')
+    parser.add_argument('--head', type=int, default=8, help='Number of head attentions.')
 
     return parser.parse_args()

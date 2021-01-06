@@ -1,4 +1,3 @@
-import math
 import torch
 from torch.nn.parameter import Parameter
 
@@ -15,11 +14,11 @@ class GraphConvolution(torch.nn.Module):
         """
         super(GraphConvolution, self).__init__()
 
-        self.weight = Parameter(torch.FloatTensor(in_dim, out_dim))
-        self.bias = Parameter(torch.FloatTensor(out_dim))
+        self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
+        self.b = Parameter(torch.FloatTensor(out_dim))
         
-        torch.nn.init.xavier_uniform_(self.weight)
-        torch.nn.init.zeros_(self.bias)
+        torch.nn.init.xavier_uniform_(self.W)
+        torch.nn.init.zeros_(self.b)
 
     def forward(self, input, adj):
         """
@@ -30,6 +29,6 @@ class GraphConvolution(torch.nn.Module):
         Returns:
             (torch Tensor): W * L * H + b
         """
-        support = torch.mm(input, self.weight)
+        support = torch.mm(input, self.W)
         output = torch.sparse.mm(adj, support)
-        return output + self.bias
+        return output + self.b

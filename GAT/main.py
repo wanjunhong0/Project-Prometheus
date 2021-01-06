@@ -10,6 +10,7 @@ from GAT.models import GAT
 from GAT.parser import parse_args
 from GAT.load_data import Data, Dataset, collate
 
+
 # Settings
 args = parse_args()
 for arg in vars(args):

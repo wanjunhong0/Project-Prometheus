@@ -3,7 +3,6 @@ import pandas as pd
 import torch
 import torch.nn.functional as F
 from sklearn.model_selection import train_test_split
-import argparse
 
 
 class Data(object):

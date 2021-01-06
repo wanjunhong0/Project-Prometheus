@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 from torch.nn.parameter import Parameter
 import torch.nn.functional as F
@@ -17,7 +16,7 @@ class GraphAttentionLayer(torch.nn.Module):
         super(GraphAttentionLayer, self).__init__()
 
         self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
-        self.a = Parameter(torch.FloatTensor(out_dim*2, 1))
+        self.a = Parameter(torch.FloatTensor(out_dim * 2, 1))
         
         torch.nn.init.xavier_uniform_(self.W.data, gain=1.414)
         torch.nn.init.xavier_uniform_(self.a.data, gain=1.414)

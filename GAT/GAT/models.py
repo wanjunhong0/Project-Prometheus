@@ -22,16 +22,16 @@ class GAT(torch.nn.Module):
             self.add_module('attention_{}'.format(i), attention)
         self.out_attention = GraphAttentionLayer(n_hidden * n_head, n_class)
 
-    def forward(self, x, edge_list):
+    def forward(self, feature, edge_list):
         """
         Args:
-            x (torch Tensor): feature input
+            feature (torch Tensor): feature input
             edge_list (torch Tensor): node index for every edge in graph
 
         Returns:
             (torch Tensor): log probability for each class in label
         """
-        x = F.dropout(x, self.dropout, training=self.training)
+        x = F.dropout(feature, self.dropout, training=self.training)
         x = torch.cat([att(x, edge_list) for att in self.attentions], dim=1)
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.out_attention(x, edge_list)

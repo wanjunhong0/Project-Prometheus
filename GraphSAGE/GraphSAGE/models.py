@@ -33,10 +33,10 @@ class SupervisedGraphSAGE(torch.nn.Module):
         Returns:
             (torch Tensor): log probability for each class in label
         """
-        x = self.agg1(feature, adj)
+        x = F.dropout(feature, self.dropout, training=self.training)
+        x = self.agg1(x, adj)
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.agg2(x, adj)
-        x = F.dropout(x, self.dropout, training=self.training)
         x = self.fc(x)
 
         return F.log_softmax(x, dim=1)

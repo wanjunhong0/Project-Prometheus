@@ -81,7 +81,7 @@ class Collate(object):
         edge_list = []
         for i in nodes:
             sample = self.neighbor_list[i]
-            if len(sample) > self.n_sample:
+            if len(sample) > self.n_sample and self.n_sample > 0:
                 sample = sample[torch.randperm(len(sample))[: self.n_sample]]
             edge_list.append(torch.cat([torch.LongTensor([i] * len(sample)), sample]).view(2, -1))
         if self.agg_type =='gcn':

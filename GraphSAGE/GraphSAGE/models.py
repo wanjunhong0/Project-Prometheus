@@ -20,8 +20,9 @@ class SupervisedGraphSAGE(torch.nn.Module):
         super(SupervisedGraphSAGE, self).__init__()
 
         self.dropout = dropout
-        self.agg1 = Aggregator(2 * n_feature, n_hidden, agg_type)
-        self.agg2 = Aggregator(2 * n_hidden, n_hidden, agg_type)
+        self.agg1 = Aggregator(n_feature, n_hidden, agg_type)
+        self.agg2 = Aggregator(n_hidden, n_hidden, agg_type)
+
         self.fc = torch.nn.Linear(n_hidden, n_class)
 
     def forward(self, feature, adj):

@@ -16,7 +16,10 @@ class Aggregator(torch.nn.Module):
         """
         super(Aggregator, self).__init__()
 
-        self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
+        if agg_type == 'gcn':
+            self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
+        else: 
+            self.W = Parameter(torch.FloatTensor(2 * in_dim, out_dim))
         self.agg_type = agg_type
 
         torch.nn.init.xavier_uniform_(self.W)
@@ -32,7 +35,10 @@ class Aggregator(torch.nn.Module):
             (torch Tensor): H after aggregation
         """
         h = torch.sparse.mm(adj, input)
-        output = torch.mm(torch.cat([h, input], dim=1), self.W)
+        if self.agg_type == 'gcn':
+            output = torch.mm(h, self.W)
+        else:
+            output = torch.mm(torch.cat([h, input], dim=1), self.W)
 
         return F.relu(output)
 

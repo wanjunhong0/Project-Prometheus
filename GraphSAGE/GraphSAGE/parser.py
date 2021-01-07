@@ -10,7 +10,7 @@ def parse_args():
     parser.add_argument('--test_size', type=int, default=0.4, help='Test dataset size.')
     parser.add_argument('--sample', type=int, default=10, help='Number of neighbors to sample (0 means no sampling).')
     parser.add_argument('--batch_size', type=int, default=128, help='Number of sample per batch.')
-    parser.add_argument('--aggregator', nargs='?', default='mean', help='Choose a aggregator type from {mean, gcn}')
+    parser.add_argument('--aggregator', nargs='?', default='mean', help='Choose a aggregator type from {mean, gcn, meanpooling}')
     parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train.')
     parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')

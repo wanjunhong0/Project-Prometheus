@@ -1,9 +1,7 @@
 import time
-import argparse
-import random
 import torch
-import torch.nn.functional as F
 import torch.optim as optim
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score
 

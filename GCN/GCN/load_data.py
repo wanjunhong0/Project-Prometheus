@@ -3,18 +3,17 @@ import pandas as pd
 import torch
 import torch.nn.functional as F
 from sklearn.model_selection import train_test_split
-import argparse
 
 
 class Data(object):
     def __init__(self, path, adj_type, test_size, seed):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
-           
+
         Args:
             path (str): file path
             adj_type (str): the type of laplacian matrix of adjacency matrix {'single', 'double'}
-            test_size (float): the testset proportion of the dataset 
+            test_size (float): the testset proportion of the dataset
             seed (int): random seed
         """
         # Reading files
@@ -64,5 +63,5 @@ def create_norm_adj(adj, adj_type):
     if adj_type == 'symmetric':   # D^(-1/2) * A * D^(-1/2)
         degree_ = torch.diag(degree.pow(-0.5))
         norm_adj = torch.mm(torch.mm(adj, degree_), degree_)
-    
+
     return norm_adj.to_sparse()

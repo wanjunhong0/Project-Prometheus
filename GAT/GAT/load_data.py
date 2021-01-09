@@ -9,10 +9,10 @@ class Data(object):
     def __init__(self, path, test_size, seed):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
-           
+
         Args:
             path (str): file path
-            test_size (float): the testset proportion of the dataset 
+            test_size (float): the testset proportion of the dataset
             seed (int): random seed
         """
         # Reading files
@@ -58,7 +58,7 @@ class Dataset(torch.utils.data.Dataset):
         idx = self.idx[i]
         # two layers of graph conv need edge list of 2-hop neighbors
         neighbor = self.edge_list[:, self.edge_list[0] == idx][1]
-        edge_list  = self.edge_list[:, (self.edge_list[0].view(-1, 1) == neighbor).any(-1)]
+        edge_list = self.edge_list[:, (self.edge_list[0].view(-1, 1) == neighbor).any(-1)]
 
         return edge_list, idx
 
@@ -69,6 +69,3 @@ def collate(batch):
     idx = torch.LongTensor([i[1] for i in batch])
 
     return edge_list, idx
-
-
-

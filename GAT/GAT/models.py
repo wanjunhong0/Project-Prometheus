@@ -14,7 +14,7 @@ class GAT(torch.nn.Module):
             n_head (int): the number of attention head
         """
         super(GAT, self).__init__()
-        
+
         self.dropout = dropout
         # multi-head graph attention
         self.attentions = [GraphAttentionLayer(n_feature, n_hidden) for _ in range(n_head)]
@@ -35,5 +35,5 @@ class GAT(torch.nn.Module):
         x = torch.cat([att(x, edge_list) for att in self.attentions], dim=1)
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.out_attention(x, edge_list)
-        
+
         return F.log_softmax(x, dim=1)

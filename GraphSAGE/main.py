@@ -41,7 +41,7 @@ test_loader = DataLoader(dataset=test, batch_size=args.batch_size, collate_fn=co
 Training
 ===========================================================================
 """
-model = SupervisedGraphSAGE(n_feature=feature.shape[1], n_hidden=args.hidden, n_class=data.n_class, 
+model = SupervisedGraphSAGE(n_feature=feature.shape[1], n_hidden=args.hidden, n_class=data.n_class,
                             agg_type=args.aggregator, dropout=args.dropout)
 optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 model.to(device)

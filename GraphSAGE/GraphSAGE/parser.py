@@ -6,7 +6,7 @@ def parse_args():
     parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path.')
     parser.add_argument('--dataset', nargs='?', default='cora', help='Choose a dataset')
 
-    parser.add_argument('--seed', type=int, default=123, help='Random seed.') 
+    parser.add_argument('--seed', type=int, default=123, help='Random seed.')
     parser.add_argument('--test_size', type=int, default=0.4, help='Test dataset size.')
     parser.add_argument('--sample', type=int, default=10, help='Number of neighbors to sample (0 means no sampling).')
     parser.add_argument('--batch_size', type=int, default=128, help='Number of sample per batch.')

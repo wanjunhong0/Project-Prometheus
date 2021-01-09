@@ -17,14 +17,14 @@ class GraphAttentionLayer(torch.nn.Module):
 
         self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
         self.a = Parameter(torch.FloatTensor(out_dim * 2, 1))
-        
+
         torch.nn.init.xavier_uniform_(self.W.data, gain=1.414)
         torch.nn.init.xavier_uniform_(self.a.data, gain=1.414)
 
     def forward(self, input, edge_list):
         """
         Args:
-            input (torch Tensor): H hiddens 
+            input (torch Tensor): H hiddens
             edge_list (torch Tensor): node index for every edge in graph
 
         Returns:

@@ -16,7 +16,7 @@ class GraphConvolution(torch.nn.Module):
 
         self.W = Parameter(torch.FloatTensor(in_dim, out_dim))
         self.b = Parameter(torch.FloatTensor(out_dim))
-        
+
         torch.nn.init.xavier_uniform_(self.W)
         torch.nn.init.zeros_(self.b)
 

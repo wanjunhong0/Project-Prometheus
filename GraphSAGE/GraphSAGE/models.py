@@ -41,6 +41,3 @@ class SupervisedGraphSAGE(torch.nn.Module):
         x = self.fc(x)
 
         return F.log_softmax(x, dim=1)
-
-
-

@@ -9,10 +9,10 @@ class Data(object):
     def __init__(self, path, test_size, seed):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
-           
+
         Args:
             path (str): file path
-            test_size (float): the testset proportion of the dataset 
+            test_size (float): the testset proportion of the dataset
             seed (int): random seed
         """
         # Reading files
@@ -84,7 +84,7 @@ class Collate(object):
             if len(sample) > self.n_sample and self.n_sample > 0:
                 sample = sample[torch.randperm(len(sample))[: self.n_sample]]
             edge_list.append(torch.cat([torch.LongTensor([i] * len(sample)), sample]).view(2, -1))
-        if self.agg_type =='gcn':
+        if self.agg_type == 'gcn':
             edge_list.append(torch.stack([nodes, nodes]))
         edge_list = torch.cat(edge_list, dim=1)
         adj = torch.sparse.FloatTensor(edge_list, torch.ones_like(edge_list[0]), torch.Size([self.n_node, self.n_node]))

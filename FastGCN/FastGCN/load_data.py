@@ -3,8 +3,8 @@ import torch
 import torch.nn.functional as F
 
 
-class Data(object):
-    def __init__(self, path, adj_type, val_test, seed):
+class Data():
+    def __init__(self, path, adj_type, val_test):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
 
@@ -45,6 +45,18 @@ class Data(object):
 
 
 
+class Dataset(torch.utils.data.Dataset):
+    """ Generate train, val, test dataset for the model """
+    def __init__(self, idx):
+        self.idx = idx
+
+    def __len__(self):
+        return len(self.idx)
+
+    def __getitem__(self, i):
+        idx = self.idx[i]
+
+        return idx
 
 
 def create_norm_adj(adj, adj_type):

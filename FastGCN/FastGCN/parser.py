@@ -11,9 +11,13 @@ def parse_args():
     parser.add_argument('--val_test', nargs='+', type=float, default=[0.2, 0.4], help='The proportion of val and test set')
     parser.add_argument('--test_size', type=int, default=0.4, help='Test dataset size.')
     parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train.')
+    parser.add_argument('--batch_size', type=int, default=128, help='Number of sample per batch.')
+    parser.add_argument('--sample', type=int, default=128, help='Number of neighbors to sample per layer.')
     parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 loss on parameters).')
     parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units.')
-    parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
+    parser.add_argument('--dropout', type=float, default=0.0, help='Dropout rate (1 - keep probability).')
+
+    parser.add_argument('--device', nargs='?', default='cuda:0', help='Which device to run on')
 
     return parser.parse_args()

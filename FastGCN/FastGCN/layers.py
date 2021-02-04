@@ -30,5 +30,5 @@ class GraphConvolution(torch.nn.Module):
             (torch Tensor): W * L * H + b
         """
         support = torch.mm(input, self.W)
-        output = torch.sparse.mm(adj, support)
+        output = torch.mm(adj, support)
         return output + self.b

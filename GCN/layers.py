@@ -23,12 +23,13 @@ class GraphConvolution(torch.nn.Module):
     def forward(self, input, adj):
         """
         Args:
-            input (torch Tensor): H Hiddens
-            adj (torch Tensor): L Laplacian matrix
+            input (torch tensor): H Hiddens
+            adj (torch tensor): L Laplacian matrix
 
         Returns:
-            (torch Tensor): W * L * H + b
+            (torch tensor): W * L * H + b
         """
         support = torch.mm(input, self.W)
         output = torch.sparse.mm(adj, support)
+
         return output + self.b

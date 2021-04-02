@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from FastGCN.layers import GraphConvolution
+from layers import GraphConvolution
 
 
 class FastGCN(torch.nn.Module):

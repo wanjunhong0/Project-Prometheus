@@ -13,7 +13,7 @@ class Data():
             dataset (str): dataset name
         """
         # load data
-        data = Planetoid(root=path, name=dataset)
+        data = Planetoid(root=path, name=dataset, split='full')
         self.feature = data[0].x
         self.edge = data[0].edge_index
         self.label = data[0].y

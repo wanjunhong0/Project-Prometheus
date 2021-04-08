@@ -4,16 +4,17 @@ from utils import normalize_adj, sparse_diag
 
 
 class Data():
-    def __init__(self, path, dataset):
+    def __init__(self, path, dataset, split):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
 
         Args:
             path (str): file path
             dataset (str): dataset name
+            split (str): type of dataset split
         """
         # load data
-        data = Planetoid(root=path, name=dataset, split='full')
+        data = Planetoid(root=path, name=dataset, split=split)
         self.feature = data[0].x
         self.edge = data[0].edge_index
         self.label = data[0].y

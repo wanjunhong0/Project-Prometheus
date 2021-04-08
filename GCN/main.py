@@ -16,6 +16,7 @@ Configuation
 parser = argparse.ArgumentParser(description="Run GCN.")
 parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path')
 parser.add_argument('--dataset', nargs='?', default='Cora', help='Choose a dataset from {Cora, CiteSeer, PubMed}')
+parser.add_argument('--split', nargs='?', default='public', help='The type of dataset split {public, full, random}')
 parser.add_argument('--seed', type=int, default=123, help='Random seed')
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate')
@@ -35,7 +36,7 @@ print('Training on device = {}'.format(device))
 Loading data
 ===========================================================================
 """
-data = Data(path=args.data_path, dataset=args.dataset)
+data = Data(path=args.data_path, dataset=args.dataset, split=args.split)
 print('Loaded {0} dataset with {1} nodes and {2} edges'.format(args.dataset, data.n_node, data.n_edge))
 feature = data.feature.to(device)
 norm_adj = data.norm_adj.to(device)

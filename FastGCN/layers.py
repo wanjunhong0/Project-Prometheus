@@ -3,8 +3,8 @@ from torch.nn.parameter import Parameter
 
 
 class GraphConvolution(torch.nn.Module):
-    """
-    Simple GCN layer, similar to https://arxiv.org/abs/1609.02907
+    """GCN layer
+       https://arxiv.org/abs/1609.02907
     """
     def __init__(self, in_dim, out_dim):
         """
@@ -30,5 +30,5 @@ class GraphConvolution(torch.nn.Module):
             (torch Tensor): W * L * H + b
         """
         support = torch.mm(input, self.W)
-        output = torch.mm(adj, support)
+        output = torch.sparse.mm(adj, support)
         return output + self.b

@@ -4,8 +4,8 @@ import torch.nn.functional as F
 
 
 class GraphAttentionLayer(torch.nn.Module):
-    """
-    Simple GAT layer, similar to https://arxiv.org/abs/1710.10903
+    """GAT layer
+       https://arxiv.org/abs/1710.10903
     """
     def __init__(self, in_dim, out_dim):
         """

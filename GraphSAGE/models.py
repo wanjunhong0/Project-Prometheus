@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from GraphSAGE.layers import Aggregator
+from layers import Aggregator
 
 
 class SupervisedGraphSAGE(torch.nn.Module):
@@ -25,7 +25,7 @@ class SupervisedGraphSAGE(torch.nn.Module):
 
         self.fc = torch.nn.Linear(n_hidden, n_class)
 
-    def forward(self, feature, adj):
+    def forward(self, feature, adj1, adj2):
         """
         Args:
             feature (torch Tensor): feature input
@@ -35,9 +35,9 @@ class SupervisedGraphSAGE(torch.nn.Module):
             (torch Tensor): log probability for each class in label
         """
         x = F.dropout(feature, self.dropout, training=self.training)
-        x = self.agg1(x, adj)
+        x = self.agg1(x, adj1)
         x = F.dropout(x, self.dropout, training=self.training)
-        x = self.agg2(x, adj)
+        x = self.agg2(x, adj2)
         x = self.fc(x)
 
         return F.log_softmax(x, dim=1)

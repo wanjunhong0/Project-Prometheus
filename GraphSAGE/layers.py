@@ -26,7 +26,6 @@ class Aggregator(torch.nn.Module):
 
         torch.nn.init.xavier_uniform_(self.W)
 
-
     def forward(self, input, adj):
         """
         Args:
@@ -37,8 +36,9 @@ class Aggregator(torch.nn.Module):
             (torch Tensor): H after aggregation
         """
         if self.agg_type == 'meanpooling':
-            input = F.relu(self.fc_pooling(input))
-        h = torch.sparse.mm(adj, input)
+            h = torch.sparse.mm(adj, F.relu(self.fc_pooling(input)))
+        else:
+            h = torch.sparse.mm(adj, input)
         if self.agg_type == 'gcn':
             output = torch.mm(h, self.W)
         else:

@@ -41,6 +41,9 @@ print('Loaded {0} dataset with {1} nodes and {2} edges'.format(args.dataset, dat
 feature = data.feature.to(device)
 norm_adj = data.norm_adj.to(device)
 label = data.label.to(device)
+label_train = label[data.idx_train]
+label_val = label[data.idx_val]
+label_test = label[data.idx_test]
 
 """
 ===========================================================================
@@ -57,17 +60,17 @@ for epoch in range(1, args.epoch+1):
     # Training
     model.train()
     optimizer.zero_grad()
-    output = model(feature, norm_adj)
-    loss_train = F.nll_loss(output[data.idx_train], label[data.idx_train])
-    acc_train = metric(output[data.idx_train].max(1)[1], label[data.idx_train])
+    output = model(feature, norm_adj)[data.idx_train]
+    loss_train = F.nll_loss(output, label_train)
+    acc_train = metric(output.max(1)[1], label_train)
     loss_train.backward()
     optimizer.step()
 
     # Validation
     model.eval()
-    output = model(feature, norm_adj)
-    loss_val = F.nll_loss(output[data.idx_val], label[data.idx_val])
-    acc_val = metric(output[data.idx_val].max(1)[1], label[data.idx_val])
+    output = model(feature, norm_adj)[data.idx_val]
+    loss_val = F.nll_loss(output, label_val)
+    acc_val = metric(output.max(1)[1], label_val)
 
     print('Epoch {0:04d} | Time: {1:.2f}s | Loss = [train: {2:.4f}, val: {3:.4f}] | ACC = [train: {4:.4f}, val: {5:.4f}]'
           .format(epoch, time.time() - t, loss_train, loss_val, acc_train, acc_val))
@@ -78,8 +81,8 @@ Testing
 ===========================================================================
 """
 model.eval()
-output = model(feature, norm_adj)
-loss_test = F.nll_loss(output[data.idx_test], label[data.idx_test])
-acc_test = metric(output[data.idx_test].max(1)[1], label[data.idx_test])
+output = model(feature, norm_adj)[data.idx_test]
+loss_test = F.nll_loss(output, label_test)
+acc_test = metric(output.max(1)[1], label_test)
 print('======================Testing======================')
 print('Loss = [test: {0:.4f}] | ACC = [test: {1:.4f}]'.format(loss_test, acc_test))

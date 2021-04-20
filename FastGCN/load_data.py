@@ -27,8 +27,6 @@ class Data():
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
         self.adj = torch.add(self.adj, sparse_diag(torch.ones(self.n_node)))
         self.norm_adj = normalize_adj(self.adj, symmetric=True)
-        self.feature_train = self.feature[self.idx_train]
-        self.label_train = self.label[self.idx_train]
         self.adj_train = sparse_select(sparse_select(self.adj, 0, self.idx_train), 1, self.idx_train)
         self.norm_adj_train = normalize_adj(self.adj_train, symmetric=True)
 

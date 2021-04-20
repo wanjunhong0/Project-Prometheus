@@ -69,12 +69,13 @@ for epoch in range(1, args.epoch+1):
     metric.reset()
     for edge_batch, idx_batch in train_loader:
         optimizer.zero_grad()
+        label_batch = label[idx_batch]
         output = model(feature, edge_batch.to(device))[idx_batch]
-        loss_batch = F.nll_loss(output, label[idx_batch])  # mean loss to backward
+        loss_batch = F.nll_loss(output, label_batch)  # mean loss to backward
         loss_batch.backward()
         optimizer.step()
         loss_train += loss_batch * len(idx_batch)
-        acc_batch = metric(output.max(1)[1], label[idx_batch])
+        acc_batch = metric(output.max(1)[1], label_batch)
     loss_train = loss_train / len(data.idx_train)
     acc_train = metric.compute()
 
@@ -83,9 +84,10 @@ for epoch in range(1, args.epoch+1):
     loss_val = 0
     metric.reset()
     for edge_batch, idx_batch in val_loader:
+        label_batch = label[idx_batch]
         output = model(feature, edge_batch.to(device))[idx_batch]
-        loss_val += F.nll_loss(output, label[idx_batch], reduction='sum')
-        acc_batch = metric(output.max(1)[1], label[idx_batch])
+        loss_val += F.nll_loss(output, label_batch, reduction='sum')
+        acc_batch = metric(output.max(1)[1], label_batch)
     loss_val = loss_val / len(data.idx_val)
     acc_val = metric.compute()
 
@@ -100,9 +102,10 @@ Testing
 loss_test = 0
 metric.reset()
 for edge_batch, idx_batch in test_loader:
+    label_batch = label[idx_batch]
     output = model(feature, edge_batch.to(device))[idx_batch]
-    loss_test += F.nll_loss(output, label[idx_batch], reduction='sum')
-    acc_batch = metric(output.max(1)[1], label[idx_batch])
+    loss_test += F.nll_loss(output, label_batch, reduction='sum')
+    acc_batch = metric(output.max(1)[1], label_batch)
 loss_test = loss_test / len(data.idx_test)
 acc_test = metric.compute()
 

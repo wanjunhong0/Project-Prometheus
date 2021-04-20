@@ -4,7 +4,7 @@ from utils import normalize_adj
 
 
 class Data():
-    def __init__(self, path, dataset, split, n_layer):
+    def __init__(self, path, dataset, split, k):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
 
@@ -12,7 +12,7 @@ class Data():
             path (str): file path
             dataset (str): dataset name
             split (str): type of dataset split
-            n_layer (int) numbers of layers
+            k (int) k-hop aggregation
         """
         data = Planetoid(root=path, name=dataset, split=split)
         self.feature = data[0].x
@@ -28,6 +28,6 @@ class Data():
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
         self.norm_adj = normalize_adj(self.adj, symmetric=True)
         self.feature_diffused = [self.feature]
-        for i in range(n_layer):
+        for i in range(k):
             self.feature_diffused.append(torch.sparse.mm(self.norm_adj, self.feature_diffused[i]))
         

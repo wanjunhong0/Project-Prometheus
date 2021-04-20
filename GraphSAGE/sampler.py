@@ -31,7 +31,7 @@ class Sampler():
         edge = torch.cat(edge, dim=1)
         adj = torch.sparse_coo_tensor(edge, torch.ones(edge.shape[1]), self.adj.size())
         if self.agg_type == 'gcn':
-            adj = torch.add(self.adj, sparse_diag(torch.ones(self.n_node)))
+            adj = torch.add(adj, sparse_diag(torch.ones(self.n_node)))
         norm_adj = normalize_adj(adj, symmetric=False)
         idx = torch.unique(edge)
 

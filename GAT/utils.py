@@ -13,7 +13,7 @@ def normalize_adj(adj, symmetric=True):
     Returns:
         (torch sparse tensor): Normalized laplacian matrix
     """
-    degree = torch.sparse.sum(adj, dim=1)._values()
+    degree = torch.sparse.sum(adj, dim=1).to_dense()
     if symmetric:
         degree_ = sparse_diag(degree.pow(-0.5))
         norm_adj = torch.sparse.mm(torch.sparse.mm(degree_, adj), degree_)
@@ -36,23 +36,6 @@ def sparse_diag(value):
     index = torch.stack([torch.arange(n), torch.arange(n)])
 
     return torch.sparse_coo_tensor(index, value, [n ,n])
-
-def sparse_norm(matrix, dim):
-    """Sparse L2 norm, torch.norm currently only supports full reductions on sparse tensor
-
-    Args:
-        adj (torch sparse tensor): 2D matrix
-        dim (int): dimension
-
-    Returns:
-        (torch tensor): norm vector
-    """
-    matrix = torch.sparse_coo_tensor(matrix._indices(), matrix._values().abs(), matrix.size()).pow(2)
-    if dim == 0:
-        norm = torch.sparse.sum(matrix, dim=1)._values().pow(0.5)
-    if dim == 1:
-        norm = torch.sparse.sum(matrix, dim=0)._values().pow(0.5)
-    return norm
 
 def sparse_select(adj, dim, index):
     """index select on sparse tensor (temporary function)

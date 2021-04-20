@@ -16,7 +16,7 @@ Configuation
 parser = argparse.ArgumentParser(description="Run GCN.")
 parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path')
 parser.add_argument('--dataset', nargs='?', default='Cora', help='Choose a dataset from {Cora, CiteSeer, PubMed}')
-parser.add_argument('--split', nargs='?', default='public', help='The type of dataset split {public, full, random}')
+parser.add_argument('--split', nargs='?', default='full', help='The type of dataset split {public, full, random}')
 parser.add_argument('--seed', type=int, default=123, help='Random seed')
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate')

@@ -17,10 +17,10 @@ Configuation
 parser = argparse.ArgumentParser(description="Run GraphSAGE.")
 parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path.')
 parser.add_argument('--dataset', nargs='?', default='Cora', help='Choose a dataset')
-parser.add_argument('--split', nargs='?', default='public', help='The type of dataset split {public, full, random}')
+parser.add_argument('--split', nargs='?', default='full', help='The type of dataset split {public, full, random}')
 parser.add_argument('--seed', type=int, default=123, help='Random seed.')
 parser.add_argument('--sample', type=int, default=10, help='Number of neighbors to sample (0 means no sampling).')
-parser.add_argument('--batch_size', type=int, default=64, help='Number of sample per batch.')
+parser.add_argument('--batch_size', type=int, default=128, help='Number of sample per batch.')
 parser.add_argument('--aggregator', nargs='?', default='mean', help='Choose a aggregator type from {mean, gcn, meanpooling}')
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate.')
@@ -50,7 +50,7 @@ test = Dataset(data.idx_test)
 train_loader = DataLoader(dataset=train, batch_size=args.batch_size)
 val_loader = DataLoader(dataset=val, batch_size=args.batch_size)
 test_loader = DataLoader(dataset=test, batch_size=args.batch_size)
-sampler = Sampler(data.adj, args.agg_type)
+sampler = Sampler(data.adj, args.aggregator)
 
 """
 ===========================================================================

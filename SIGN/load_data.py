@@ -1,6 +1,6 @@
 import torch
 from torch_geometric.datasets import Planetoid
-from utils import normalize_adj, sparse_diag
+from utils import normalize_adj
 
 
 class Data():
@@ -26,7 +26,7 @@ class Data():
         self.n_class = data.num_classes
         self.n_feature = data.num_features
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
-        self.norm_adj = normalize_adj(torch.add(self.adj, sparse_diag(torch.ones(self.n_node))), symmetric=True)
+        self.norm_adj = normalize_adj(self.adj, symmetric=True)
         self.feature_diffused = [self.feature]
         for i in range(n_layer):
             self.feature_diffused.append(torch.sparse.mm(self.norm_adj, self.feature_diffused[i]))

@@ -11,7 +11,7 @@ def normalize_adj(adj, symmetric):
     Returns:
         (torch sparse tensor): Normalized laplacian matrix
     """
-    degree = torch.sparse.sum(adj, dim=1)._values()
+    degree = torch.sparse.sum(adj, dim=1).to_dense()
     if symmetric:
         degree_ = sparse_diag(degree.pow(-0.5))
         norm_adj = torch.sparse.mm(torch.sparse.mm(degree_, adj), degree_)

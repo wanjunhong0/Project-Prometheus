@@ -13,7 +13,6 @@ class Data():
             dataset (str): dataset name
             split (str): type of dataset split
         """
-        # load data
         data = Planetoid(root=path, name=dataset, split=split)
         self.feature = data[0].x
         self.edge = data[0].edge_index
@@ -25,10 +24,8 @@ class Data():
         self.n_edge = data[0].num_edges
         self.n_class = data.num_classes
         self.n_feature = data.num_features
-        # Calculate adj
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
         self.norm_adj = normalize_adj(torch.add(self.adj, sparse_diag(torch.ones(self.n_node))))
-        # train
         self.feature_train = self.feature[self.idx_train]
         self.label_train = self.label[self.idx_train]
         self.adj_train = sparse_select(sparse_select(self.adj, 0, self.idx_train), 1, self.idx_train)

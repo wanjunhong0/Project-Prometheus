@@ -15,14 +15,14 @@ from sampler import Sampler
 Configuation
 ===========================================================================
 """
-parser = argparse.ArgumentParser(description="Run GCN.")
+parser = argparse.ArgumentParser(description="Run FastGCN.")
 parser.add_argument('--data_path', nargs='?', default='../data/', help='Input data path')
 parser.add_argument('--dataset', nargs='?', default='Cora', help='Choose a dataset from {Cora, CiteSeer, PubMed}')
 parser.add_argument('--split', nargs='?', default='public', help='The type of dataset split {public, full, random}')
 parser.add_argument('--seed', type=int, default=123, help='Random seed')
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train')
-parser.add_argument('--batch_size', type=int, default=128, help='Number of sample per batch.')
-parser.add_argument('--sample', type=int, default=256, help='Number of neighbors to sample per layer.')
+parser.add_argument('--batch_size', type=int, default=64, help='Number of sample per batch.')
+parser.add_argument('--sample', type=int, default=128, help='Number of neighbors to sample per layer.')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 norm on parameters)')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units')

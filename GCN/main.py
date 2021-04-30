@@ -21,6 +21,7 @@ parser.add_argument('--seed', type=int, default=123, help='Random seed')
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs to train')
 parser.add_argument('--lr', type=float, default=0.01, help='Initial learning rate')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight decay (L2 norm on parameters)')
+parser.add_argument('--layer', type=int, default=2, help='Number of layers')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
 args = parser.parse_args()
@@ -51,7 +52,8 @@ Training
 ===========================================================================
 """
 # Model and optimizer
-model = GCN(n_feature=data.n_feature, n_hidden=args.hidden, n_class=data.n_class, dropout=args.dropout).to(device)
+model = GCN(n_layer=args.layer, n_feature=data.n_feature, n_hidden=args.hidden, 
+            n_class=data.n_class, dropout=args.dropout).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 metric = torchmetrics.Accuracy().to(device)
 

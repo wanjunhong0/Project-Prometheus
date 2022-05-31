@@ -1,6 +1,4 @@
 import torch
-from torch_sparse import index_select
-from torch_sparse.tensor import SparseTensor
 
 
 def normalize_adj(adj, symmetric=True):
@@ -57,13 +55,3 @@ def sparse_norm(matrix, dim):
     if dim == 1:
         norm = torch.sparse.sum(matrix, dim=0)._values().pow(0.5)
     return norm
-
-
-def sparse_select(adj, dim, index):
-    """index select on sparse tensor (temporary function)
-       torch.index_select on sparse tesnor is too slow to be useful
-       https://github.com/pytorch/pytorch/issues/54561
-    """
-    adj = SparseTensor.from_torch_sparse_coo_tensor(adj)
-    adj = index_select(adj, dim, index)
-    return adj.to_torch_sparse_coo_tensor()

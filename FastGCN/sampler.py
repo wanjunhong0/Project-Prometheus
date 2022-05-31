@@ -1,5 +1,5 @@
 import torch
-from utils import sparse_norm, sparse_diag, sparse_select
+from utils import sparse_norm, sparse_diag
 
 
 class Sampler():
@@ -23,7 +23,7 @@ class Sampler():
 
     def layer_sampling(self, idx, n_sample):
         """Importance sampling based on norm of the normailized adjacency matrix as probability"""
-        adj = sparse_select(self.adj, 0, idx)
+        adj = torch.index_select(self.adj, 0, idx)
         neighbor = torch.sparse.sum(adj, dim=0)._indices()[0]
         # neighbor = torch.unique(adj._indices()[1])
         p = self.p[neighbor]
@@ -31,6 +31,6 @@ class Sampler():
         sample = torch.multinomial(p, n_sample, replacement=True)
         neighbor_sampled = neighbor[sample]
         p_sampled = p[sample]
-        adj_sampled = torch.sparse.mm(sparse_select(adj, 1, neighbor_sampled), sparse_diag(1. / (p_sampled * n_sample)))
+        adj_sampled = torch.sparse.mm(torch.index_select(adj, 1, neighbor_sampled), sparse_diag(1. / (p_sampled * n_sample)))
 
         return neighbor_sampled, adj_sampled

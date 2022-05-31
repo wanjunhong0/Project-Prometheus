@@ -52,7 +52,7 @@ Training
 ===========================================================================
 """
 # Model and optimizer
-model = GCN(n_layer=args.layer, n_feature=data.n_feature, n_hidden=args.hidden, 
+model = GCN(n_layer=args.layer, n_feature=data.n_feature, n_hidden=args.hidden,
             n_class=data.n_class, dropout=args.dropout).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 metric = torchmetrics.Accuracy().to(device)

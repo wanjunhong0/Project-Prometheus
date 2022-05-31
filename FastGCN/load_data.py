@@ -31,7 +31,6 @@ class Data():
         self.norm_adj_train = normalize_adj(self.adj_train, symmetric=True)
 
 
-
 class Dataset(torch.utils.data.Dataset):
     """Generate train, val, test dataset for the model"""
     def __init__(self, idx):

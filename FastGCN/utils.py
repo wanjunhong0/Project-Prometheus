@@ -23,6 +23,7 @@ def normalize_adj(adj, symmetric=True):
 
     return norm_adj
 
+
 def sparse_diag(vector):
     """Convert vector into diagonal matrix
 
@@ -37,7 +38,8 @@ def sparse_diag(vector):
     n = len(vector)
     index = torch.stack([vector._indices()[0], vector._indices()[0]])
 
-    return torch.sparse_coo_tensor(index, vector._values(), [n ,n])
+    return torch.sparse_coo_tensor(index, vector._values(), [n, n])
+
 
 def sparse_norm(matrix, dim):
     """Sparse L2 norm, torch.norm currently only supports full reductions on sparse tensor
@@ -55,6 +57,7 @@ def sparse_norm(matrix, dim):
     if dim == 1:
         norm = torch.sparse.sum(matrix, dim=0)._values().pow(0.5)
     return norm
+
 
 def sparse_select(adj, dim, index):
     """index select on sparse tensor (temporary function)

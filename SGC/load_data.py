@@ -30,4 +30,3 @@ class Data():
         self.norm_adj = normalize_adj(self.adj, symmetric=True)
         for _ in range(k):
             self.feature_diffused = torch.sparse.mm(self.norm_adj, self.feature)
-        

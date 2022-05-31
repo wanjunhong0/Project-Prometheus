@@ -21,6 +21,7 @@ def normalize_adj(adj, symmetric):
 
     return norm_adj
 
+
 def sparse_diag(vector):
     """Convert vector into diagonal matrix
 
@@ -35,4 +36,4 @@ def sparse_diag(vector):
     n = len(vector)
     index = torch.stack([vector._indices()[0], vector._indices()[0]])
 
-    return torch.sparse_coo_tensor(index, vector._values(), [n ,n])
+    return torch.sparse_coo_tensor(index, vector._values(), [n, n])

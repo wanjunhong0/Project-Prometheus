@@ -27,6 +27,3 @@ class Data():
         self.n_feature = data.num_features
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
         self.norm_adj = normalize_adj(self.adj, symmetric=True)
-        self.feature_diffused = [self.feature]
-        for i in range(k):
-            self.feature_diffused.append(torch.sparse.mm(self.norm_adj, self.feature_diffused[i]))

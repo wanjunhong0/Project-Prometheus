@@ -1,10 +1,10 @@
 import torch
 from torch_geometric.datasets import Planetoid
-from utils import normalize_adj
+from utils import sparse_diag
 
 
 class Data():
-    def __init__(self, path, dataset, split, k):
+    def __init__(self, path, dataset, split):
         """Load dataset
            Preprocess feature, label, normalized adjacency matrix and train/val/test index
 
@@ -12,7 +12,6 @@ class Data():
             path (str): file path
             dataset (str): dataset name
             split (str): type of dataset split
-            k (int) k-hop aggregation
         """
         data = Planetoid(root=path, name=dataset, split=split)
         self.feature = data[0].x
@@ -26,7 +25,4 @@ class Data():
         self.n_class = data.num_classes
         self.n_feature = data.num_features
         self.adj = torch.sparse_coo_tensor(self.edge, torch.ones(self.n_edge), [self.n_node, self.n_node])
-        self.norm_adj = normalize_adj(self.adj, symmetric=True)
-        self.feature_diffused = [self.feature]
-        for i in range(k):
-            self.feature_diffused.append(torch.sparse.mm(self.norm_adj, self.feature_diffused[i]))
+        self.adj = torch.add(self.adj, sparse_diag(torch.ones(self.n_node)))

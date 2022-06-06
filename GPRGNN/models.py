@@ -39,10 +39,9 @@ class GPRGNN(torch.nn.Module):
         x = F.relu(self.lin1(x))
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.lin2(x)
-        xs = [x]
+        out = x * self.gamma[0]
         for i in range(self.k):
-            x = self.props[i](x, adj) * self.gamma[i+1]
-            xs.append(x)
-        out = torch.sum(self.gamma * xs, dim=1)
+            x = self.props[i](x, adj)
+            out = x * self.gamma[i+1] + out
 
         return F.log_softmax(out, dim=1)

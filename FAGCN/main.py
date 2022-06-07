@@ -24,7 +24,7 @@ parser.add_argument('--weight_decay', type=float, default=5e-4, help='Weight dec
 parser.add_argument('--layer', type=int, default=8, help='Number of layers')
 parser.add_argument('--hidden', type=int, default=64, help='Number of hidden units')
 parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate')
-parser.add_argument('--eps', type=float, default=0.3, help='alpha')
+parser.add_argument('--eps', type=float, default=0.3, help='Eps')
 args = parser.parse_args()
 for arg in vars(args):
     print('{0} = {1}'.format(arg, getattr(args, arg)))

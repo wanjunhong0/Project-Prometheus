@@ -31,7 +31,7 @@ NOTE: `--layer` indicates numbers of (Graph) Neural Networks layers which includ
 
 
 ### Model Parameters
--ChebNet [Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering](https://arxiv.org/abs/1606.09375)
+- ChebNet [Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering](https://arxiv.org/abs/1606.09375)
 
 - GCN [Semi-Supervised Classification with Graph Convolutional Networks](https://arxiv.org/abs/1609.02907)
 
